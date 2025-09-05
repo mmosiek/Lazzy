@@ -5,21 +5,21 @@ import json
 import tempfile
 import shutil
 
-# URL do apps.json z GitHuba
+# URL to apps.json on GitHub
 GITHUB_JSON_URL = "https://raw.githubusercontent.com/mmosiek/Lazzy/main/apps.json"
 
 def fetch_apps():
-    print("Pobieranie listy aplikacji z GitHub...")
+    print("Downloading list of apps from GitHub...")
     try:
         response = requests.get(GITHUB_JSON_URL, timeout=30)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"Blad podczas pobierania listy aplikacji: {e}")
+        print(f"Error while downloading app list: {e}")
         return None
 
 def download_file(url, filename):
-    print(f"Pobieranie: {filename}...")
+    print(f"Downloading: {filename}...")
     try:
         response = requests.get(url, stream=True, timeout=60)
         response.raise_for_status()
@@ -34,36 +34,36 @@ def download_file(url, filename):
                     downloaded += len(chunk)
                     if total_size > 0:
                         progress = (downloaded / total_size) * 100
-                        print(f"Postep: {progress:.1f}%", end='\r')
+                        print(f"Progress: {progress:.1f}%", end='\r')
         
-        print(f"Pobrano: {filename}")
+        print(f"Downloaded: {filename}")
         return True
     except Exception as e:
-        print(f"Blad podczas pobierania {filename}: {e}")
+        print(f"Error while downloading {filename}: {e}")
         return False
 
 def install_silent(installer, silent_flag):
-    print(f"Instalowanie: {installer}...")
+    print(f"Installing: {installer}...")
     try:
         result = subprocess.run([installer, silent_flag], 
                               check=True, 
                               capture_output=True,
                               text=True,
                               timeout=300)
-        print(f"Zainstalowano: {installer}")
+        print(f"Installed: {installer}")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"Blad podczas instalacji {installer}: {e}")
+        print(f"Error while installing {installer}: {e}")
         if e.stderr:
-            print(f"Szczegoly bledu: {e.stderr}")
+            print(f"Details: {e.stderr}")
         return False
     except subprocess.TimeoutExpired:
-        print(f"Timeout podczas instalacji {installer}")
+        print(f"Timeout while installing {installer}")
         return False
 
 def show_menu(apps, filter_text=None):
-    print("\nDostepne aplikacje:")
-    print("0. [WYBIERZ WSZYSTKIE]")
+    print("\nAvailable apps:")
+    print("0. [SELECT ALL]")
     
     filtered_apps = {}
     for key, app in apps.items():
@@ -72,27 +72,27 @@ def show_menu(apps, filter_text=None):
         filtered_apps[key] = app
     
     if not filtered_apps:
-        print("Brak aplikacji spelniajacych kryteria wyszukiwania.")
+        print("No apps found with that search.")
         return filtered_apps
     
     for key, app in filtered_apps.items():
-        category = app.get('category', 'Brak kategorii')
+        category = app.get('category', 'No category')
         print(f"{key}. {app['name']} ({category})")
     
     return filtered_apps
 
 def display_selected_apps(apps, selected_keys):
-    print("\nWybrane aplikacje do instalacji:")
+    print("\nSelected apps to install:")
     for key in selected_keys:
         if key in apps:
             app = apps[key]
-            category = app.get('category', 'Brak kategorii')
+            category = app.get('category', 'No category')
             print(f"- {app['name']} ({category})")
 
 def main():
     apps = fetch_apps()
     if not apps:
-        print("Nie mozna pobrac listy aplikacji. Sprawdz polaczenie internetowe.")
+        print("Could not get app list. Check your internet connection.")
         return
 
     selected_apps = []
@@ -102,91 +102,91 @@ def main():
         filtered_apps = show_menu(apps, current_filter)
         
         if not filtered_apps and current_filter:
-            print("Brak aplikacji spelniajacych kryteria. Sprobuj innej frazy.")
+            print("No matching apps. Try another word.")
             current_filter = ""
             continue
         
-        choice = input("\nWybierz numer aplikacji do dodania (lub 'q' aby zakonczyc, 'c' aby wyczyscic): ").strip().lower()
+        choice = input("\nEnter app number to add (or 'q' to quit, 'c' to clear): ").strip().lower()
 
         if choice == 'q':
             break
         elif choice == 'c':
             selected_apps.clear()
-            print("Wyczyszczono liste wybranych aplikacji.")
+            print("Selection cleared.")
             continue
         elif choice == '':
-            current_filter = input("Wpisz fragment nazwy aplikacji do wyszukania: ").strip()
+            current_filter = input("Enter search keyword: ").strip()
             continue
 
         if choice == "0":
             selected_apps = list(filtered_apps.keys())
-            print("Wybrano wszystkie dostepne aplikacje.")
+            print("All apps selected.")
             break
 
         if choice in filtered_apps:
             if choice not in selected_apps:
                 selected_apps.append(choice)
-                print(f"Dodano: {filtered_apps[choice]['name']}")
+                print(f"Added: {filtered_apps[choice]['name']}")
             else:
-                print("Ta aplikacja juz zostala dodana.")
+                print("This app is already selected.")
         else:
-            print("Nieprawidlowy wybor.")
+            print("Invalid choice.")
 
-        cont = input("Czy chcesz dodac kolejna aplikacje? (t/n): ").strip().lower()
-        if cont != 't':
+        cont = input("Add another app? (y/n): ").strip().lower()
+        if cont != 'y':
             break
 
     if not selected_apps:
-        print("Nie wybrano zadnych aplikacji.")
+        print("No apps selected.")
         return
 
     display_selected_apps(apps, selected_apps)
 
-    confirm = input("\nCzy chcesz rozpoczac instalacje? (t/n): ").strip().lower()
-    if confirm != 't':
-        print("Instalacja anulowana.")
+    confirm = input("\nStart installation? (y/n): ").strip().lower()
+    if confirm != 'y':
+        print("Installation cancelled.")
         return
 
-    # Utworz tymczasowy folder dla pobranych instalatorow
+    # Create a temporary folder for installers
     download_dir = tempfile.mkdtemp(prefix="lazzy_installers_")
-    print(f"Uzywany tymczasowy folder: {download_dir}")
+    print(f"Using temporary folder: {download_dir}")
 
     successful_installs = 0
     total_apps = len(selected_apps)
 
     for i, app_key in enumerate(selected_apps, 1):
         if app_key not in apps:
-            print(f"Ostrzezenie: Aplikacja o kluczu {app_key} nie istnieje w liscie.")
+            print(f"Warning: App with key {app_key} not found.")
             continue
 
         app = apps[app_key]
-        print(f"\n[{i}/{total_apps}] Przetwarzanie: {app['name']}")
+        print(f"\n[{i}/{total_apps}] Processing: {app['name']}")
 
         installer_path = os.path.join(download_dir, app["installer_name"])
         
-        # Pobierz plik
+        # Download installer
         if download_file(app["url"], installer_path):
-            # Zainstaluj
+            # Run installer
             if install_silent(installer_path, app["silent_flag"]):
                 successful_installs += 1
             
-            # Usun instalator
+            # Delete installer
             try:
                 os.remove(installer_path)
-                print(f"Usunieto instalator {app['installer_name']}")
+                print(f"Deleted installer: {app['installer_name']}")
             except OSError as e:
-                print(f"Blad podczas usuwania instalatora: {e}")
+                print(f"Error deleting installer: {e}")
         else:
-            print(f"Nie udalo sie pobrac aplikacji: {app['name']}")
+            print(f"Failed to download: {app['name']}")
 
-    print(f"\nInstalacja zakonczona. Pomyslnie zainstalowano {successful_installs}/{total_apps} aplikacji.")
+    print(f"\nInstallation finished. Successfully installed {successful_installs}/{total_apps} apps.")
 
-    # Sprzatanie - usun folder tymczasowy
+    # Delete temporary folder
     try:
         shutil.rmtree(download_dir)
-        print(f"Usunieto folder tymczasowy: {download_dir}")
+        print(f"Deleted temporary folder: {download_dir}")
     except Exception as e:
-        print(f"Blad podczas usuwania folderu tymczasowego: {e}")
+        print(f"Error deleting temp folder: {e}")
 
 if __name__ == "__main__":
     main()
