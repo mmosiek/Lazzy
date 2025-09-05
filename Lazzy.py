@@ -4,8 +4,9 @@ import requests
 import json
 import tempfile
 import shutil
+from collections import defaultdict
 
-# URL to apps.json on GitHub
+# URL do apps.json z GitHuba
 GITHUB_JSON_URL = "https://raw.githubusercontent.com/mmosiek/Lazzy/main/apps.json"
 
 def fetch_apps():
@@ -64,21 +65,26 @@ def install_silent(installer, silent_flag):
 def show_menu(apps, filter_text=None):
     print("\nAvailable apps:")
     print("0. [SELECT ALL]")
-    
+
     filtered_apps = {}
+    categorized_apps = defaultdict(list)
+
     for key, app in apps.items():
         if filter_text and filter_text.lower() not in app['name'].lower():
             continue
         filtered_apps[key] = app
-    
+        category = app.get('category', 'No category')
+        categorized_apps[category].append((key, app))
+
     if not filtered_apps:
         print("No apps found with that search.")
-        return filtered_apps
-    
-    for key, app in filtered_apps.items():
-        category = app.get('category', 'No category')
-        print(f"{key}. {app['name']} ({category})")
-    
+        return {}
+
+    for category, app_list in categorized_apps.items():
+        print(f"\n=== {category} ===")
+        for key, app in app_list:
+            print(f"{key}. {app['name']}")
+
     return filtered_apps
 
 def display_selected_apps(apps, selected_keys):
