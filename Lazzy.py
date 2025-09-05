@@ -2,6 +2,8 @@ import os
 import subprocess
 import requests
 import json
+import tempfile
+import shutil
 
 # URL do apps.json z GitHuba
 GITHUB_JSON_URL = "https://raw.githubusercontent.com/mmosiek/Lazzy/main/apps.json"
@@ -145,9 +147,9 @@ def main():
         print("Instalacja anulowana.")
         return
 
-    # Utworz folder dla pobranych instalatorow
-    download_dir = "downloads"
-    os.makedirs(download_dir, exist_ok=True)
+    # Utworz tymczasowy folder dla pobranych instalatorow
+    download_dir = tempfile.mkdtemp(prefix="lazzy_installers_")
+    print(f"Uzywany tymczasowy folder: {download_dir}")
 
     successful_installs = 0
     total_apps = len(selected_apps)
@@ -179,12 +181,12 @@ def main():
 
     print(f"\nInstalacja zakonczona. Pomyslnie zainstalowano {successful_installs}/{total_apps} aplikacji.")
 
-    # Sprzatanie - usun puste foldery
+    # Sprzatanie - usun folder tymczasowy
     try:
-        if not os.listdir(download_dir):
-            os.rmdir(download_dir)
-    except OSError:
-        pass
+        shutil.rmtree(download_dir)
+        print(f"Usunieto folder tymczasowy: {download_dir}")
+    except Exception as e:
+        print(f"Blad podczas usuwania folderu tymczasowego: {e}")
 
 if __name__ == "__main__":
     main()
