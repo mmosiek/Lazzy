@@ -4,14 +4,14 @@
     "url": "https://dl.google.com/chrome/install/latest/chrome_installer.exe",
     "installer_name": "chrome_installer.exe",
     "silent_flag": "/silent",
-    "category": "Przeglądarki"
+    "category": "Browsers"
   },
   "2": {
     "name": "7-Zip",
     "url": "https://www.7-zip.org/a/7z2301-x64.exe",
     "installer_name": "7zip_installer.exe",
     "silent_flag": "/S",
-    "category": "Narzędzia"
+    "category": "Tools"
   },
   "3": {
     "name": "VLC Player",
@@ -21,3 +21,4 @@
     "category": "Multimedia"
   }
 }
+
