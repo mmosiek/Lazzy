@@ -1,0 +1,23 @@
+{
+  "1": {
+    "name": "Google Chrome",
+    "url": "https://dl.google.com/chrome/install/latest/chrome_installer.exe",
+    "installer_name": "chrome_installer.exe",
+    "silent_flag": "/silent",
+    "category": "Przeglądarki"
+  },
+  "2": {
+    "name": "7-Zip",
+    "url": "https://www.7-zip.org/a/7z2301-x64.exe",
+    "installer_name": "7zip_installer.exe",
+    "silent_flag": "/S",
+    "category": "Narzędzia"
+  },
+  "3": {
+    "name": "VLC Player",
+    "url": "https://get.videolan.org/vlc/3.0.20/win64/vlc-3.0.20-win64.exe",
+    "installer_name": "vlc_installer.exe",
+    "silent_flag": "/S",
+    "category": "Multimedia"
+  }
+}
