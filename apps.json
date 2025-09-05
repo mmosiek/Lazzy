@@ -19,6 +19,82 @@
     "installer_name": "vlc_installer.exe",
     "silent_flag": "/S",
     "category": "Multimedia"
+  },
+  "4": {
+    "name": "Mozilla Firefox",
+    "url": "https://download.mozilla.org/?product=firefox-latest&os=win64&lang=en-US",
+    "installer_name": "firefox_installer.exe",
+    "silent_flag": "-ms",
+    "category": "Browsers"
+  },
+  "5": {
+    "name": "Notepad++",
+    "url": "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/latest/download/npp.8.5.7.Installer.x64.exe",
+    "installer_name": "notepadpp_installer.exe",
+    "silent_flag": "/S",
+    "category": "Tools"
+  },
+  "6": {
+    "name": "Spotify",
+    "url": "https://download.scdn.co/SpotifySetup.exe",
+    "installer_name": "spotify_installer.exe",
+    "silent_flag": "/silent",
+    "category": "Multimedia"
+  },
+  "7": {
+    "name": "Discord",
+    "url": "https://discord.com/api/download?platform=win",
+    "installer_name": "discord_installer.exe",
+    "silent_flag": "/S",
+    "category": "Communication"
+  },
+  "8": {
+    "name": "LibreOffice",
+    "url": "https://download.documentfoundation.org/libreoffice/stable/7.6.5/win/x86_64/LibreOffice_7.6.5_Win_x64.msi",
+    "installer_name": "libreoffice_installer.msi",
+    "silent_flag": "/quiet",
+    "category": "Office"
+  },
+  "9": {
+    "name": "Paint.NET",
+    "url": "https://download.getpaint.net/paint.net.4.3.18.install.zip",
+    "installer_name": "paintnet_installer.exe",
+    "silent_flag": "/silent",
+    "category": "Graphics"
+  },
+  "10": {
+    "name": "TeamViewer",
+    "url": "https://download.teamviewer.com/download/TeamViewer_Setup.exe",
+    "installer_name": "teamviewer_installer.exe",
+    "silent_flag": "/S",
+    "category": "Remote Access"
+  },
+  "11": {
+    "name": "OBS Studio",
+    "url": "https://cdn-fastly.obsproject.com/downloads/OBS-Studio-29.1.3-Full-Installer-x64.exe",
+    "installer_name": "obs_installer.exe",
+    "silent_flag": "/S",
+    "category": "Multimedia"
+  },
+  "12": {
+    "name": "Python",
+    "url": "https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe",
+    "installer_name": "python_installer.exe",
+    "silent_flag": "/quiet InstallAllUsers=1 PrependPath=1",
+    "category": "Development"
+  },
+  "13": {
+    "name": "Visual Studio Code",
+    "url": "https://update.code.visualstudio.com/latest/win32-x64-user/stable",
+    "installer_name": "vscode_installer.exe",
+    "silent_flag": "/VERYSILENT /MERGETASKS=!runcode",
+    "category": "Development"
+  },
+  "14": {
+    "name": "Audacity",
+    "url": "https://github.com/audacity/audacity/releases/download/Audacity-3.3.3/audacity-win-3.3.3.exe",
+    "installer_name": "audacity_installer.exe",
+    "silent_flag": "/S",
+    "category": "Multimedia"
   }
 }
-
